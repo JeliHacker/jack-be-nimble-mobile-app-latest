@@ -8,5 +8,18 @@ const client = sanityClient({
 
 const query = '*[_type == "term" && title == $term][0]';
 
-export const fetchTermWithTitle = (title: string) =>
-  client.fetch(query, { term: title }).then((term) => console.log(term.title));
+export const getTerm = async (title: string) => {
+  return client.fetch(query, { term: title });
+};
+
+export interface Term {
+  _id: string;
+  _updatedAt: string;
+  _createdAt: string;
+  title: string;
+  stage: string;
+  states: string[];
+  shortDef: string;
+  mainDef: string;
+  didYouKnow: string;
+}
