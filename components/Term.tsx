@@ -3,6 +3,8 @@ import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Chip from './Chip';
 
+import { fetchTermWithTitle } from '../sanityClient';
+fetchTermWithTitle('Time-out');
 const Term = () => {
   return (
     <ScrollView style={styles.container}>
