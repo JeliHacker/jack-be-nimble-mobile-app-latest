@@ -1,53 +1,64 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import React from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useEffect, useState } from 'react';
 import Chip from './Chip';
 
-import { fetchTermWithTitle } from '../sanityClient';
-fetchTermWithTitle('Time-out');
-const Term = () => {
+import { getTerm, Term } from '../sanityClient';
+import LoadingIndicator from './LoadingIndicator';
+import Errored from './Errored';
+const TermView = () => {
+  const [term, setTerm] = useState<Term | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [errored, setErrored] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setTerm(await getTerm('Time-out'));
+      } catch (e) {
+        setErrored(true);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  if (loading) return <LoadingIndicator />;
+  if (errored || !term) return <Errored />;
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={styles.title}>Self-Contained Classroom</Text>
+        <Text style={styles.title}>{term.title}</Text>
         <View style={styles.infoContainer}>
           <Text style={styles.infoLabel}>States:</Text>
-          <Chip label="All" />
+          {term.states.map((state) => (
+            <View style={{ marginRight: 8 }}>
+              <Chip label={state} />
+            </View>
+          ))}
         </View>
         <View style={styles.infoContainer}>
           <Text style={styles.infoLabel}>Grade Level:</Text>
-          <Chip label="K-12" />
+          <Chip label={term.stage} />
         </View>
       </View>
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>Short Definition</Text>
-        <Text style={styles.body}>
-          A classroom for students with disabilities where one special education
-          teacher is responsible for teaching all academic subjects
-        </Text>
+        <Text style={styles.body}>{term.shortDef}</Text>
       </View>
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>More</Text>
-        <Text style={styles.body}>
-          "Self-contained classrooms" are classrooms where students with
-          disabilities spend the entire day. They would not have different
-          teachers for different subjects, rather, they would be taught all
-          academic subjects by one special education teacher. Self-contained
-          classrooms also do not have any students without disabilities.
-        </Text>
+        <Text style={styles.body}>{term.mainDef}</Text>
       </View>
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>Did you know?</Text>
-        <Text style={styles.body}>
-          Self-contained classrooms do not provide students with disabilities
-          the opportunities to engage with their non-disabled peers.
-        </Text>
+        <Text style={styles.body}>{term.didYouKnow}</Text>
       </View>
     </ScrollView>
   );
 };
 
-export default Term;
+export default TermView;
 
 const styles = StyleSheet.create({
   container: {},
