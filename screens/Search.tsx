@@ -14,6 +14,7 @@ import { getAllTerms, Term } from '../data/sanityClient';
 import { BottomTabScreenProps } from '../navigation/types';
 import { formatMatches } from '../utils/util';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import Feather from '@expo/vector-icons/Feather';
 
 const Search = ({ navigation }: BottomTabScreenProps<'Search'>) => {
   const [allTerms, setAllTerms] = useState([]);
@@ -26,7 +27,7 @@ const Search = ({ navigation }: BottomTabScreenProps<'Search'>) => {
       new Fuse(allTerms, {
         keys,
         includeMatches: true,
-        minMatchCharLength: 3,
+        minMatchCharLength: 2,
         threshold: 0.4,
       }),
     [allTerms]
@@ -97,18 +98,38 @@ const Search = ({ navigation }: BottomTabScreenProps<'Search'>) => {
 };
 
 const Hit = ({ hit }: { hit: Fuse.FuseResult<Term> }) => {
-  console.log(hit.item.title, hit.item.shortDef);
   const { title, shortDef } = formatMatches(hit);
   return (
-    <View key={hit.item._id}>
-      <HighlightedText
-        textParts={title}
-        highlightStyle={styles.highlightedText}
-      />
-      <HighlightedText
-        textParts={shortDef}
-        highlightStyle={styles.highlightedText}
-      />
+    <View
+      key={hit.item._id}
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 8,
+        paddingRight: 16,
+        marginLeft: 16,
+        borderBottomWidth: 2,
+        borderBottomColor: '#EEF1F2',
+      }}
+    >
+      <View style={{ flex: 1 }}>
+        <HighlightedText
+          textParts={title}
+          style={{
+            fontSize: 18,
+            fontWeight: '500',
+            color: 'gray',
+            marginBottom: 4,
+          }}
+          highlightStyle={styles.highlightedText}
+        />
+        <HighlightedText
+          textParts={shortDef}
+          style={{ fontSize: 12, color: 'gray' }}
+          highlightStyle={styles.highlightedText}
+        />
+      </View>
+      <Feather name="arrow-up-right" size={24} color="black" />
     </View>
   );
 };
@@ -121,7 +142,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderColor: 'gray',
     paddingHorizontal: 16,
-    paddingVertical: 32,
+    paddingVertical: 16,
   },
   headerText: {
     fontSize: 32,
@@ -149,7 +170,8 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   highlightedText: {
-    fontWeight: '600',
+    fontWeight: '700',
+    color: 'black',
   },
 });
 

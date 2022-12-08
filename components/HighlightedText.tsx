@@ -14,9 +14,9 @@ const HighlightedText = ({
   style,
 }: HighlightedTextProps) => {
   return (
-    <Text>
+    <Text style={style}>
       {textParts.map((part, idx) => (
-        <Text key={idx} style={part.isHighlighted ? highlightStyle : style}>
+        <Text key={idx} style={part.isHighlighted && highlightStyle}>
           {part.value}
         </Text>
       ))}
