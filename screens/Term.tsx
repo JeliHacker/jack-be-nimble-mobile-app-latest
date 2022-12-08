@@ -1,11 +1,14 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import Chip from './Chip';
+import Chip from '../components/Chip';
 
-import { getTerm, Term } from '../sanityClient';
-import LoadingIndicator from './LoadingIndicator';
-import Errored from './Errored';
-const TermView = () => {
+import { getTerm, Term } from '../data/sanityClient';
+import LoadingIndicator from '../components/LoadingIndicator';
+import Errored from '../components/Errored';
+import { RootStackScreenProps } from '../navigation/types';
+
+const TermView = ({ route }: RootStackScreenProps<'Term'>) => {
+  const { termId } = route.params;
   const [term, setTerm] = useState<Term | null>(null);
   const [loading, setLoading] = useState(true);
   const [errored, setErrored] = useState(false);
@@ -32,7 +35,7 @@ const TermView = () => {
         <View style={styles.infoContainer}>
           <Text style={styles.infoLabel}>States:</Text>
           {term.states.map((state) => (
-            <View style={{ marginRight: 8 }}>
+            <View key={state} style={{ marginRight: 8 }}>
               <Chip label={state} />
             </View>
           ))}
