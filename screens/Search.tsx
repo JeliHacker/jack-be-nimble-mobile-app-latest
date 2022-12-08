@@ -1,14 +1,25 @@
 import Fuse from 'fuse.js';
-import { useEffect, useMemo, useState } from 'react';
-import { Button, StyleSheet, TextInput, Text, View } from 'react-native';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Button,
+  StyleSheet,
+  TextInput,
+  Text,
+  View,
+  Pressable,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import HighlightedText from '../components/HighlightedText';
 import { getAllTerms, Term } from '../data/sanityClient';
 import { BottomTabScreenProps } from '../navigation/types';
 import { formatMatches } from '../utils/util';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const Search = ({ navigation }: BottomTabScreenProps<'Search'>) => {
   const [allTerms, setAllTerms] = useState([]);
   const [searchText, setSearchText] = useState('');
+  const [isInputFocused, setIsInputFocused] = useState(false);
+  const textInputRef = useRef<TextInput>(null);
   const keys = ['title', 'shortDef'];
   const searchClient = useMemo(
     () =>
@@ -38,12 +49,42 @@ const Search = ({ navigation }: BottomTabScreenProps<'Search'>) => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        value={searchText}
-        onChangeText={search}
-        style={styles.textInput}
-      />
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>JackBeNimble</Text>
+        <View style={styles.inputContainer}>
+          {isInputFocused && (
+            <Pressable
+              onPress={() => textInputRef.current?.blur()}
+              style={{
+                height: 40,
+                justifyContent: 'center',
+                paddingRight: 8,
+              }}
+            >
+              <Ionicons name="chevron-back-outline" size={24} color="black" />
+            </Pressable>
+          )}
+          <View style={styles.textInputWrapper}>
+            <TextInput
+              value={searchText}
+              onChangeText={search}
+              style={styles.textInput}
+              placeholder="Search"
+              autoCapitalize="none"
+              autoCorrect={false}
+              onFocus={() => setIsInputFocused(true)}
+              onBlur={() => setIsInputFocused(false)}
+              ref={textInputRef}
+            />
+            {isInputFocused && searchText && (
+              <Pressable onPress={() => setSearchText('')}>
+                <Ionicons name="md-close-circle" size={24} color="black" />
+              </Pressable>
+            )}
+          </View>
+        </View>
+      </View>
       {searchHits.map((hit) => (
         <Hit key={hit.item._id} hit={hit} />
       ))}
@@ -51,7 +92,7 @@ const Search = ({ navigation }: BottomTabScreenProps<'Search'>) => {
         title="go to term"
         onPress={() => navigation.navigate('Term', { termId: 'id' })}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -75,16 +116,37 @@ const Hit = ({ hit }: { hit: Fuse.FuseResult<Term> }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+  },
+  header: {
+    borderBottomWidth: 2,
+    borderColor: 'gray',
+    paddingHorizontal: 16,
+    paddingVertical: 32,
+  },
+  headerText: {
+    fontSize: 32,
+    fontWeight: '800',
+    marginBottom: 40,
+    textAlign: 'center',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  textInputWrapper: {
+    flexDirection: 'row',
+    flexGrow: 1,
+    alignItems: 'center',
+    height: 50,
+    backgroundColor: '#EEF1F2',
+    borderRadius: 100,
+    padding: 8,
+    paddingHorizontal: 32,
   },
   textInput: {
-    alignSelf: 'center',
-    width: '80%',
-    height: 50,
-    borderWidth: 1,
-    borderRadius: 4,
-    borderColor: 'gray',
-    padding: 8,
+    fontSize: 18,
+    flexGrow: 1,
   },
   highlightedText: {
     fontWeight: '600',
