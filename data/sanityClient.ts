@@ -6,7 +6,12 @@ const client = sanityClient({
   useCdn: false,
 });
 
+const queryAllTerm = '*[_type == "term"]';
 const query = '*[_type == "term" && title == $term][0]';
+
+export const getAllTerms = async () => {
+  return client.fetch(queryAllTerm);
+};
 
 export const getTerm = async (title: string) => {
   return client.fetch(query, { term: title });
