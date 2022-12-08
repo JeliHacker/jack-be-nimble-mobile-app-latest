@@ -1,4 +1,5 @@
 import Fuse from 'fuse.js';
+import { Term } from '../data/sanityClient';
 
 export interface TextPart {
   value: string;
