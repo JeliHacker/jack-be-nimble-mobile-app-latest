@@ -4,6 +4,7 @@ import {
   NavigatorScreenParams,
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { Term } from '../data/sanityClient';
 
 /**
  * Bottom Tab Navigator is inside Root Stack Navigator. This is because
@@ -13,7 +14,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
  */
 export type RootStackParamList = {
   Root: NavigatorScreenParams<BottomTabParamList> | undefined;
-  Term: { termId: string };
+  Term: { term: Term };
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =

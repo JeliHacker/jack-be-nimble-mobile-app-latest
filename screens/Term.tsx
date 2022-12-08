@@ -2,31 +2,10 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Chip from '../components/Chip';
 
-import { getTerm, Term } from '../data/sanityClient';
-import LoadingIndicator from '../components/LoadingIndicator';
-import Errored from '../components/Errored';
 import { RootStackScreenProps } from '../navigation/types';
 
 const TermView = ({ route }: RootStackScreenProps<'Term'>) => {
-  const { termId } = route.params;
-  const [term, setTerm] = useState<Term | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [errored, setErrored] = useState(false);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        setTerm(await getTerm('Time-out'));
-      } catch (e) {
-        setErrored(true);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
-
-  if (loading) return <LoadingIndicator />;
-  if (errored || !term) return <Errored />;
+  const { term } = route.params;
 
   return (
     <ScrollView style={styles.container}>

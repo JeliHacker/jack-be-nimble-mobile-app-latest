@@ -87,12 +87,13 @@ const Search = ({ navigation }: BottomTabScreenProps<'Search'>) => {
         </View>
       </View>
       {searchHits.map((hit) => (
-        <Hit key={hit.item._id} hit={hit} />
+        <Pressable
+          key={hit.item._id}
+          onPress={() => navigation.navigate('Term', { term: hit.item })}
+        >
+          <Hit hit={hit} />
+        </Pressable>
       ))}
-      <Button
-        title="go to term"
-        onPress={() => navigation.navigate('Term', { termId: 'id' })}
-      />
     </SafeAreaView>
   );
 };
